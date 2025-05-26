@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+// screens/DashboardScreen.js
+>>>>>>> 71f8ca93224cd32c282706bb41c115fabecfd470
 import React, { useEffect, useState, useCallback } from 'react';
 import {
   SafeAreaView,
@@ -21,8 +25,13 @@ import {
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import {
+<<<<<<< HEAD
   getConsentHistory,
   getUnreadNotifications, // ⬅️ Correction ici !
+=======
+  fetchConsentHistory,
+  fetchUnreadNotifications,
+>>>>>>> 71f8ca93224cd32c282706bb41c115fabecfd470
   markNotificationsAsRead,
   createPaymentSheet,
 } from '../utils/api';
@@ -42,7 +51,11 @@ try {
 }
 
 export default function DashboardScreen() {
+<<<<<<< HEAD
   const { user, loading, logout } = useAuth(); // Ajout de logout ici
+=======
+  const { user, loading } = useAuth();
+>>>>>>> 71f8ca93224cd32c282706bb41c115fabecfd470
   const router = useRouter();
 
   const [history, setHistory] = useState([]);
@@ -65,8 +78,13 @@ export default function DashboardScreen() {
     setRefreshing(true);
     try {
       const [histRes, notifRes] = await Promise.all([
+<<<<<<< HEAD
         getConsentHistory(),
         getUnreadNotifications(),
+=======
+        fetchConsentHistory(),
+        fetchUnreadNotifications(),
+>>>>>>> 71f8ca93224cd32c282706bb41c115fabecfd470
       ]);
       setHistory(Array.isArray(histRes) ? histRes : histRes.consents || []);
       setNotifications(notifRes || []);
@@ -130,6 +148,7 @@ export default function DashboardScreen() {
     }
   };
 
+<<<<<<< HEAD
   // 7. Déconnexion (nouvelle fonction)
   const handleLogout = async () => {
     try {
@@ -141,6 +160,9 @@ export default function DashboardScreen() {
   };
 
   // 8. Loader global
+=======
+  // 7. Loader global
+>>>>>>> 71f8ca93224cd32c282706bb41c115fabecfd470
   if (loading || !user) {
     return (
       <SafeAreaView style={styles.center}>
@@ -149,7 +171,11 @@ export default function DashboardScreen() {
     );
   }
 
+<<<<<<< HEAD
   // 9. Filtre recherche
+=======
+  // 8. Filtre recherche
+>>>>>>> 71f8ca93224cd32c282706bb41c115fabecfd470
   const filteredHistory = history.filter(item => {
     if (!search) return true;
     const partner = item.partnerName || item.partnerEmail || '';
@@ -174,6 +200,7 @@ export default function DashboardScreen() {
             Crédits : <Text style={styles.bold}>{user.packQuantity ?? 0}</Text>
           </Text>
         </View>
+<<<<<<< HEAD
         {/* Bouton réglages */}
         <TouchableOpacity style={styles.settingsBtn} onPress={() => setShowBuyModal(true)}>
           <Ionicons name="settings-outline" size={24} color="#555" />
@@ -182,6 +209,11 @@ export default function DashboardScreen() {
         <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
           <Ionicons name="log-out-outline" size={24} color="#e74c3c" />
         </TouchableOpacity>
+=======
+        <TouchableOpacity style={styles.settingsBtn} onPress={() => setShowBuyModal(true)}>
+          <Ionicons name="settings-outline" size={24} color="#555" />
+        </TouchableOpacity>
+>>>>>>> 71f8ca93224cd32c282706bb41c115fabecfd470
       </View>
 
       {/* ——— Banner Notifications ——— */}
@@ -304,7 +336,10 @@ const styles = StyleSheet.create({
   stats: { fontSize: 14, color: '#666', marginTop: 4 },
   bold: { fontWeight: 'bold' },
   settingsBtn: { padding: 6 },
+<<<<<<< HEAD
   logoutBtn: { padding: 6, marginLeft: 4 }, // Ajout style logout
+=======
+>>>>>>> 71f8ca93224cd32c282706bb41c115fabecfd470
 
   /* NotificationBanner déjà stylé dans son composant */
 
