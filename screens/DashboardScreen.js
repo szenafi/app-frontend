@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-// screens/DashboardScreen.js
->>>>>>> 71f8ca93224cd32c282706bb41c115fabecfd470
 import React, { useEffect, useState, useCallback } from 'react';
 import {
   SafeAreaView,
@@ -25,13 +21,8 @@ import {
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import {
-<<<<<<< HEAD
   getConsentHistory,
-  getUnreadNotifications, // ⬅️ Correction ici !
-=======
-  fetchConsentHistory,
-  fetchUnreadNotifications,
->>>>>>> 71f8ca93224cd32c282706bb41c115fabecfd470
+  getUnreadNotifications,
   markNotificationsAsRead,
   createPaymentSheet,
 } from '../utils/api';
@@ -41,6 +32,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SIZES } from '../constants';
 import { useRouter } from 'expo-router';
 import LottieView from 'lottie-react-native';
+import { useStripe } from '@stripe/stripe-react-native'; // ← Stripe
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 let confettiAnim;
@@ -51,12 +43,9 @@ try {
 }
 
 export default function DashboardScreen() {
-<<<<<<< HEAD
-  const { user, loading, logout } = useAuth(); // Ajout de logout ici
-=======
-  const { user, loading } = useAuth();
->>>>>>> 71f8ca93224cd32c282706bb41c115fabecfd470
+  const { user, loading, logout, reloadUser } = useAuth(); // Ajout reloadUser ici !
   const router = useRouter();
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
   const [history, setHistory] = useState([]);
   const [notifications, setNotifications] = useState([]);
@@ -64,7 +53,6 @@ export default function DashboardScreen() {
   const [showBuyModal, setShowBuyModal] = useState(false);
   const [search, setSearch] = useState('');
   const [fabVisible, setFabVisible] = useState(true);
-
   const fabPulse = useState(new Animated.Value(1))[0];
 
   // 1. Redirection si non connecté
@@ -78,13 +66,8 @@ export default function DashboardScreen() {
     setRefreshing(true);
     try {
       const [histRes, notifRes] = await Promise.all([
-<<<<<<< HEAD
         getConsentHistory(),
         getUnreadNotifications(),
-=======
-        fetchConsentHistory(),
-        fetchUnreadNotifications(),
->>>>>>> 71f8ca93224cd32c282706bb41c115fabecfd470
       ]);
       setHistory(Array.isArray(histRes) ? histRes : histRes.consents || []);
       setNotifications(notifRes || []);
@@ -127,7 +110,7 @@ export default function DashboardScreen() {
     }
   };
 
-  // 6. Achat de crédits
+  // 6. Achat de crédits (paiement Stripe) AVEC MISE À JOUR CRÉDITS
   const handleBuyCredits = async qty => {
     setShowBuyModal(false);
     try {
@@ -142,14 +125,14 @@ export default function DashboardScreen() {
       const { error: sheetErr } = await presentPaymentSheet();
       if (sheetErr) throw new Error(sheetErr.message);
       Alert.alert('Succès', 'Crédits achetés !');
-      fetchData();
+      await reloadUser(); // ← Le user (crédits) se met à jour ici !
+      fetchData();        // refresh l'historique si besoin
     } catch (e) {
-      Alert.alert('Erreur', e.message);
+      Alert.alert('Erreur', e.message || "Une erreur est survenue lors du paiement.");
     }
   };
 
-<<<<<<< HEAD
-  // 7. Déconnexion (nouvelle fonction)
+  // 7. Déconnexion
   const handleLogout = async () => {
     try {
       await logout();
@@ -159,10 +142,23 @@ export default function DashboardScreen() {
     }
   };
 
-  // 8. Loader global
-=======
-  // 7. Loader global
->>>>>>> 71f8ca93224cd32c282706bb41c115fabecfd470
+  // 8. Filtre recherche
+  const filteredHistory = history.filter(item => {
+    if (!search) return true;
+    const partner = item.partnerName || item.partnerEmail || '';
+    return partner.toLowerCase().includes(search.toLowerCase());
+  });
+
+  // 9. Gestion du FAB (creation consentement) selon les crédits
+  const handleFabPress = () => {
+    if (!user || user.packQuantity < 1) {
+      setShowBuyModal(true);
+    } else {
+      router.push('/consent-wizard');
+    }
+  };
+
+  // 10. Loader global
   if (loading || !user) {
     return (
       <SafeAreaView style={styles.center}>
@@ -171,22 +167,11 @@ export default function DashboardScreen() {
     );
   }
 
-<<<<<<< HEAD
-  // 9. Filtre recherche
-=======
-  // 8. Filtre recherche
->>>>>>> 71f8ca93224cd32c282706bb41c115fabecfd470
-  const filteredHistory = history.filter(item => {
-    if (!search) return true;
-    const partner = item.partnerName || item.partnerEmail || '';
-    return partner.toLowerCase().includes(search.toLowerCase());
-  });
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
 
-      {/* ——— Header social ——— */}
+      {/* Header */}
       <View style={styles.header}>
         <Image
           source={{ uri: user.avatarUrl || 'https://randomuser.me/api/portraits/men/32.jpg' }}
@@ -200,23 +185,17 @@ export default function DashboardScreen() {
             Crédits : <Text style={styles.bold}>{user.packQuantity ?? 0}</Text>
           </Text>
         </View>
-<<<<<<< HEAD
-        {/* Bouton réglages */}
+        {/* Réglages */}
         <TouchableOpacity style={styles.settingsBtn} onPress={() => setShowBuyModal(true)}>
           <Ionicons name="settings-outline" size={24} color="#555" />
         </TouchableOpacity>
-        {/* BOUTON DECONNEXION */}
+        {/* Déconnexion */}
         <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
           <Ionicons name="log-out-outline" size={24} color="#e74c3c" />
         </TouchableOpacity>
-=======
-        <TouchableOpacity style={styles.settingsBtn} onPress={() => setShowBuyModal(true)}>
-          <Ionicons name="settings-outline" size={24} color="#555" />
-        </TouchableOpacity>
->>>>>>> 71f8ca93224cd32c282706bb41c115fabecfd470
       </View>
 
-      {/* ——— Banner Notifications ——— */}
+      {/* Notifications */}
       {notifications.length > 0 && (
         <NotificationBanner
           notifications={notifications}
@@ -224,7 +203,7 @@ export default function DashboardScreen() {
         />
       )}
 
-      {/* ——— Search Bar ——— */}
+      {/* Search Bar */}
       <View style={styles.searchWrap}>
         <Ionicons name="search" size={20} color="#aaa" style={{ marginHorizontal: 8 }} />
         <TextInput
@@ -235,10 +214,10 @@ export default function DashboardScreen() {
         />
       </View>
 
-      {/* ——— Titre ——— */}
+      {/* Titre */}
       <Text style={styles.title}>Historique des consentements</Text>
 
-      {/* ——— Liste ——— */}
+      {/* Liste */}
       <FlatList
         data={filteredHistory}
         keyExtractor={item => item.id.toString()}
@@ -263,7 +242,7 @@ export default function DashboardScreen() {
         )}
       />
 
-      {/* ——— FAB ——— */}
+      {/* FAB */}
       {fabVisible && (
         <Animated.View
           style={[
@@ -274,14 +253,14 @@ export default function DashboardScreen() {
         >
           <TouchableOpacity
             style={styles.fabButton}
-            onPress={() => router.push('/consent-wizard')}
+            onPress={handleFabPress}
           >
             <Ionicons name="add" size={28} color="#fff" />
           </TouchableOpacity>
         </Animated.View>
       )}
 
-      {/* ——— Modal Achat Crédit ——— */}
+      {/* Modal Achat Crédit */}
       <Modal
         visible={showBuyModal}
         transparent
@@ -336,10 +315,7 @@ const styles = StyleSheet.create({
   stats: { fontSize: 14, color: '#666', marginTop: 4 },
   bold: { fontWeight: 'bold' },
   settingsBtn: { padding: 6 },
-<<<<<<< HEAD
-  logoutBtn: { padding: 6, marginLeft: 4 }, // Ajout style logout
-=======
->>>>>>> 71f8ca93224cd32c282706bb41c115fabecfd470
+  logoutBtn: { padding: 6, marginLeft: 4 },
 
   /* NotificationBanner déjà stylé dans son composant */
 

@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-// /ConsentAPP/app-frontend/constants.js
+// ConsentAPP/app-frontend/constants.js
 
 // URL de base de votre backend (sans suffixe)
 export const API_BASE_URL = 'https://app-backend-h0p5.onrender.com';
@@ -9,12 +8,6 @@ export const API_URL = `${API_BASE_URL}/api`;
 
 export const STRIPE_PUBLISHABLE_KEY =
   'pk_test_51P5rcLA5nUL3grmuCdq4ktxeMp9RE7nKYRvcl4f7sYRfvyXBbS1bUg515Cni9MoeIlEg9Vo9YXxaAx5rhr2huM2b00Q5x9Dmli';
-=======
-// /ConsentApp/constants.js
-// Correction : API_URL sans /api à la fin pour éviter les doubles /api/api
-export const API_URL = 'https://app-backend-production-f482.up.railway.app'; // URL réelle de ton backend sur Railway
-export const STRIPE_PUBLISHABLE_KEY = 'pk_test_51P5rcLA5nUL3grmuCdq4ktxeMp9RE7nKYRvcl4f7sYRfvyXBbS1bUg515Cni9MoeIlEg9Vo9YXxaAx5rhr2huM2b00Q5x9Dmli'; // Clé publique Stripe
->>>>>>> 71f8ca93224cd32c282706bb41c115fabecfd470
 
 export const COLORS = {
   primary: '#4A90E2',
@@ -31,8 +24,4 @@ export const SIZES = {
   fontSmall: 14,
   fontMedium: 16,
   fontLarge: 20,
-<<<<<<< HEAD
 };
-=======
-};
->>>>>>> 71f8ca93224cd32c282706bb41c115fabecfd470
